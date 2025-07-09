@@ -786,7 +786,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -821,7 +821,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _base: {fileID: 0}
   <AssignedResource>k__BackingField: {fileID: 0}
-  <IsBusy>k__BackingField: 0
 --- !u!114 &6630817154854317635
 MonoBehaviour:
   m_ObjectHideFlags: 0

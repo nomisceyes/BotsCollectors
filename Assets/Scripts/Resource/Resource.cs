@@ -1,21 +1,30 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Resource : MonoBehaviour, IPoolable<Resource>
 {
+    private Rigidbody _rigidbody;
+
     public event Action<Resource> Destroyed;
 
     [field: SerializeField] public bool IsReserved { get; private set; }
 
-    //public void MarkAsBusy()
-    //{
-    //    IsReserved = true;
-    //}
+    private void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+    }
+
+    public void IsPickUp()
+    {
+        _rigidbody.isKinematic = true;
+    }
 
     public void MarkAsTaken()
     {
         Destroyed?.Invoke(this);
         IsReserved = false;
+        _rigidbody.isKinematic = false;
     }
 
     public bool TryReserve()
@@ -27,19 +36,5 @@ public class Resource : MonoBehaviour, IPoolable<Resource>
         } 
 
         return false;
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (IsReserved) 
-        {
-            Gizmos.color = Color.yellow;
-        }
-        else
-        {
-            Gizmos.color = Color.green;
-        }
-
-        Gizmos.DrawIcon(transform.position + Vector3.up * 2, "ResourceStatus");
     }
 }

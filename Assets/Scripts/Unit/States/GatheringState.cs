@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class GatheringState : UnitState
 {
-    private const float INTERACT_DISTANCE = 4f;
-    private const float BASE_DELIVERY_DISTANCE = 8f;
+    private const float InteractDistance = 4f;
+    private const float BaseDeliveryDistance = 8f;
 
     private readonly Mover _mover;
     private readonly ResourcePicker _picker;
@@ -27,21 +27,20 @@ public class GatheringState : UnitState
 
         if (_picker.HasResource == false)
         {
-            if (IsInRange(Unit.AssignedResource.transform.position, INTERACT_DISTANCE))
+            if (IsInRange(Unit.AssignedResource.transform.position, InteractDistance))
             {
                 _picker.PickResource(Unit.AssignedResource);
                 MoveToBase();
             }
         }
-        else if (IsInRange(Unit.GetPositionBase(), BASE_DELIVERY_DISTANCE))
+        else if (IsInRange(Unit.GetPositionBase(), BaseDeliveryDistance))
         {
             Unit.DeliverResource();
-            Unit.ClearResource();
         }
     }
 
     public override void Exit() =>
-        _mover.MoveTo(Unit.StartPosition);
+        _mover.Stop();
 
     private void MoveToResource() =>
         _mover.MoveTo(Unit.AssignedResource.transform.position);

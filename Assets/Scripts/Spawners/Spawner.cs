@@ -3,8 +3,10 @@ using UnityEngine.Pool;
 
 public class Spawner<TObject> : MonoBehaviour where TObject : MonoBehaviour, IPoolable<TObject>
 {
-    [SerializeField] protected int PoolCapacity;
-    [SerializeField] protected int MaxPoolSize;
+    [SerializeField] private Vector3 _minPosition;
+    [SerializeField] private Vector3 _maxPosition;
+    [SerializeField] private int PoolCapacity;
+    [SerializeField] private int MaxPoolSize;
     [SerializeField] private TObject _prefab;
 
     protected ObjectPool<TObject> Pool;
@@ -12,7 +14,7 @@ public class Spawner<TObject> : MonoBehaviour where TObject : MonoBehaviour, IPo
     private void Awake()
     {
         Pool = new ObjectPool<TObject>(
-              createFunc: () => Instantiate(_prefab),
+              createFunc: () => Instantiate(_prefab, transform, true),
               actionOnGet: (@object) => SetUpObject(@object),
               actionOnRelease: (@object) => ResetObject(@object),
               defaultCapacity: PoolCapacity,
@@ -32,5 +34,14 @@ public class Spawner<TObject> : MonoBehaviour where TObject : MonoBehaviour, IPo
     {
         @object.Destroyed += Release;
         @object.gameObject.SetActive(true);
+    }
+
+    protected Vector3 GetSpawnPosition()
+    {
+        Vector3 localPosition = new(Random.Range(_minPosition.x, _maxPosition.x),
+                                    Random.Range(_minPosition.y, _maxPosition.y),
+                                    Random.Range(_minPosition.z, _maxPosition.z));
+
+        return transform.TransformPoint(localPosition);
     }
 }

@@ -11,7 +11,9 @@ public class ResourcePicker : MonoBehaviour
     public void PickResource(Resource resource)
     {
         HasResource = true;   
+
         _currentResource = resource;
+        _currentResource.IsPickUp();
         _currentResource.transform.SetParent(_handPosition);
         _currentResource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }

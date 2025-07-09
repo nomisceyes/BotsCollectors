@@ -9,7 +9,6 @@ public class Base : MonoBehaviour
     [SerializeField] private List<Unit> _units;
     [SerializeField] private Scanner _scanner;
     [SerializeField] private ScoreCounter _scoreCounter;
-    [SerializeField] private float _scanDelay;
 
     private void Start()
     {
@@ -20,8 +19,6 @@ public class Base : MonoBehaviour
 
     private IEnumerator WorkCoroutine()
     {
-        WaitForSeconds scanWait = new(_scanDelay);
-
         while (enabled)
         {
             if (_scanner.IsScanning == false)
@@ -31,7 +28,7 @@ public class Base : MonoBehaviour
           
             AssignResourceToUnit();
 
-            yield return scanWait;
+            yield return null;
         }
     }
 

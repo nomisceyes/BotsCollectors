@@ -13,7 +13,6 @@ public class Scanner : MonoBehaviour
     private Coroutine _scanningCoroutine;
     private WaitForSeconds _scanDelay;
     private float _currentRadius;
-    //private bool IsScanning;
 
     public event Action<Resource> ResourceFound;
 
@@ -28,19 +27,16 @@ public class Scanner : MonoBehaviour
     {
         while (IsScanning)
         {
+            if (_currentRadius >= _maxRadius)
+                StopScan();
+
             UpdateScanRadius();
             PerformScan();
             VisualizeScan();
 
             yield return _scanDelay;
-
-            if (_currentRadius >= _maxRadius)
-                StopScan();
         }       
     }
-
-    public float TimeToScannComplete() =>
-        _maxRadius / _scanSpeed;
       
     public void StartScan()
     {
@@ -77,7 +73,6 @@ public class Scanner : MonoBehaviour
     private void UpdateScanRadius()
     {
         _currentRadius += _scanSpeed * Time.deltaTime;
-        Debug.Log(_currentRadius);
 
         if (_currentRadius >= _maxRadius)
             StopScan();

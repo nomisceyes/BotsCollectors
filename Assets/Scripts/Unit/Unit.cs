@@ -5,7 +5,7 @@ using UnityEngine;
                   typeof(ResourcePicker))]
 public class Unit : MonoBehaviour, IPoolable<Unit>
 {
-    [SerializeField] private Base _base;
+    private Base _base;
     private Mover _mover;
     private ResourcePicker _picker;
     private UnitStateMachine _stateMachine;
@@ -13,8 +13,7 @@ public class Unit : MonoBehaviour, IPoolable<Unit>
     public event Action<Unit> Destroyed;
 
     [field: SerializeField] public Resource AssignedResource { get; private set; }
-    [field: SerializeField] public bool IsBusy => AssignedResource != null;
-    public Vector3 StartPosition { get; private set; }
+    [field: SerializeField] public bool IsBusy { get; private set; }
 
     private void Awake()
     {
@@ -24,27 +23,25 @@ public class Unit : MonoBehaviour, IPoolable<Unit>
         _stateMachine = new(this, _mover, _picker);
     }
 
-    private void OnEnable() =>    
+    private void OnEnable() =>
         _stateMachine.SetState<IdleState>();
 
-    private void Update() =>
+    private void Update()
+    {
+        if (AssignedResource != null)        
+            IsBusy = true;       
+        else      
+            IsBusy = false;       
+
         _stateMachine.Update();
+    }
 
-    private void OnDisable() =>    
-        Destroyed?.Invoke(this);    
+    private void OnDisable() =>
+        Destroyed?.Invoke(this);
 
-    public void SetStartPosition(Vector3 position)
-    {
-        StartPosition = position;
-
+    public void SetStartPosition(Vector3 position) =>
         _mover.Warp(position);
-    }
 
-    public void ClearResource()
-    {
-        _picker.DropResource();
-        AssignedResource = null;
-    }
     public Vector3 GetPositionBase() =>
          _base.transform.position;
 
@@ -54,6 +51,15 @@ public class Unit : MonoBehaviour, IPoolable<Unit>
     public void SetBase(Base @base) =>
         _base = @base;
 
-    public void DeliverResource() =>
+    public void DeliverResource()
+    {
         _base.CollectResource(AssignedResource);
+        ClearResource();
+    }
+
+    private void ClearResource()
+    {
+        _picker.DropResource();
+        AssignedResource = null;
+    }
 }

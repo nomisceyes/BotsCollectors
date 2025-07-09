@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class UnitSpawner : Spawner<Unit>
 { 
-    [SerializeField] private Transform _spawnPoint;
     [SerializeField] private Base _base;
     [SerializeField] private int _startAmount = 3;
     [SerializeField] private float _spawnDelay = 0.5f;
@@ -26,7 +25,7 @@ public class UnitSpawner : Spawner<Unit>
     protected override void SetUpObject(Unit unit)
     {
         base.SetUpObject(unit);
-        unit.SetStartPosition(_spawnPoint.position);
+        unit.SetStartPosition(GetSpawnPosition());
         unit.SetBase(_base);
         _base.AddUnit(unit);
     }
